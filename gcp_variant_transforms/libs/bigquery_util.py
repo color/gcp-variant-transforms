@@ -28,6 +28,7 @@ from oauth2client.client import GoogleCredentials
 
 from gcp_variant_transforms.beam_io import vcf_header_io
 from gcp_variant_transforms.beam_io import vcfio
+from gcp_variant_transforms.libs import sample_info_table_schema_generator
 
 _VcfHeaderTypeConstants = vcf_header_io.VcfHeaderFieldTypeConstants
 
@@ -362,7 +363,11 @@ def _get_merged_field_schemas(
 
 def compose_table_name(base_name, suffix):
   # type: (str, str) -> str
-  return TABLE_SUFFIX_SEPARATOR.join([base_name, suffix])
+  if suffix == sample_info_table_schema_generator.SAMPLE_INFO_TABLE_SUFFIX:
+    return TABLE_SUFFIX_SEPARATOR.join([base_name, suffix])
+  else:
+    return base_name
+
 
 def get_table_base_name(table_name):
   return table_name.split(TABLE_SUFFIX_SEPARATOR)[0]
